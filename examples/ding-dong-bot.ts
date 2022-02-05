@@ -70,31 +70,27 @@ async function onMessage (msg: Message) {
     // await fileBox.toFile('/tmp/logo.jpg')
   }
 
-  if(msg.type() === MessageType.Audio){
+  if (msg.type() === MessageType.Audio) {
     const audioFileBox = await msg.toFileBox()
-    //const audioData: Buffer = await audioFileBox.toBuffer();
-    const audio_dir = filePath + t + '.silk' 
+    // const audioData: Buffer = await audioFileBox.toBuffer();
+    const audio_dir = filePath + t + '.silk'  // eslint-disable-line
     await audioFileBox.toFile(audio_dir, true)
 
     const body = {
-      field1: '1',
-      lol: '2',
-      audio: "data:audio/silk;base64,"+fs.readFileSync(audio_dir, 'base64')
-      //img: "data:image/gif;base64,"+fs.readFileSync("/storage/lol/test/nodejs/octocat.png", 'base64')
-    };
-
+      lol: '1',
+      audio: "data:audio/silk;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
+      // img: "data:image/gif;base64,"+fs.readFileSync("/storage/lol/test/nodejs/octocat.png", 'base64')
+    };  // eslint-disable-line
     const response = await fetch(url + '/api/audio/', {
-      method: 'post',
       body: JSON.stringify(body),
-      headers: {'Content-Type': 'application/json'}
-    });
-
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' } // eslint-disable-line
+    }); // eslint-disable-line
     const data = await response.json()
-    console.log(data)
-    await msg.say(JSON.stringify(data));
-    //await msg.say(data.toString())
+    await msg.say(JSON.stringify(data)); // eslint-disable-line
+    // await msg.say(data.toString())
     // FileBox.toFile
-    //await fileBox.toFile('/storage/lol/wechaty/wechat_telegram_ocr/media/p.mp3', true)
+    // await fileBox.toFile('/storage/lol/wechaty/wechat_telegram_ocr/media/p.mp3', true)
   }
   if (msg.text() === 'ding') {
     await msg.say('dong')
