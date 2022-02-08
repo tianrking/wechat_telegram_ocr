@@ -11,14 +11,15 @@ import {
   ScanStatus,
   WechatyBuilder,
   log,
+  
 }                  from 'wechaty'
-
+import { FileBox }      from 'file-box' // import { FileBox }      from 'file-box'
 import qrcodeTerminal from 'qrcode-terminal'
 import request from 'request'
 import fs from 'fs'
 import fetch from 'node-fetch'
 
-const url = 'http://0.0.0.0:61112'
+
 export enum MessageType {
   Unknown = 0,
   Attachment  = 1,    // Attach(6),
@@ -61,40 +62,99 @@ function onLogin (user: Contact) {
 }
 const filePath:string = '/storage/lol/wechaty/wechat_telegram_ocr/media/'
 const t = 1
+let _flag = 0
 async function onMessage (msg: Message) {
+  const url = 'http://0.0.0.0:61112'
   log.info('StarterBot', msg.toString())
-  if (msg.type() === MessageType.Image) {
-    const fileBox = await msg.toFileBox()
-    // FileBox.toFile
-    await fileBox.toFile(filePath + t + '.png', true)
-    // await fileBox.toFile('/tmp/logo.jpg')
-  }
+  if (msg.type() == MessageType.Text) {
+    
+    const text_data = Buffer.from(msg.text(),'base64');
 
-  if (msg.type() === MessageType.Audio) {
-    const audioFileBox = await msg.toFileBox()
-    // const audioData: Buffer = await audioFileBox.toBuffer();
-    const audio_dir = filePath + t + '.silk'  // eslint-disable-line
-    await audioFileBox.toFile(audio_dir, true)
 
+    const str = msg.text()
+    const buff = Buffer.from(str, 'utf-8') // create a buffer
+    const base64 = buff.toString('base64')  // encode buffer as Base64
     const body = {
-      lol: '1',
-      audio: "data:audio/silk;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
-      // img: "data:image/gif;base64,"+fs.readFileSync("/storage/lol/test/nodejs/octocat.png", 'base64')
+      lol: _flag,
+      tts_data: base64  // eslint-disable-line
     };  // eslint-disable-line
-    const response = await fetch(url + '/api/audio/', {
+    const response = await fetch(url + '/api/tts/', {
       body: JSON.stringify(body),
       method: 'post',
       headers: { 'Content-Type': 'application/json' } // eslint-disable-line
     }); // eslint-disable-line
+    const base64_data = await response.json()
+    const fileDataDecoded = Buffer.from(JSON.stringify(base64_data),'base64');
+    fs.writeFile("aa.wav", fileDataDecoded, function(err) {
+      console.log(err)
+    });
+    const wav_fileBox = FileBox.fromFile('aa.wav')
+    //await msg.say("saved !!") // eslint-disable-line
+    await msg.say(wav_fileBox)
+    _flag = 0
+  }
+
+  if (msg.type() === MessageType.Image) {
+    const imageBox = await msg.toFileBox()
+    const audio_dir = imageBox.name
+    await imageBox.toFile(imageBox.name, true)
+    const body = {
+        lol: _flag,
+        pic_name: imageBox.name,
+        pic_data: "data:image/jpg;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
+    };  // eslint-disable-line
+    const response = await fetch(url + '/api/style/', {
+        body: JSON.stringify(body),
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' } // eslint-disable-line
+    }); // eslint-disable-line
     const data = await response.json()
     await msg.say(JSON.stringify(data)); // eslint-disable-line
-    // await msg.say(data.toString())
-    // FileBox.toFile
-    // await fileBox.toFile('/storage/lol/wechaty/wechat_telegram_ocr/media/p.mp3', true)
+    _flag=0
+  }
+
+  if (msg.type() === MessageType.Audio) {
+    const audioFileBox = await msg.toFileBox()
+    const audio_dir = audioFileBox.name
+    await audioFileBox.toFile(audioFileBox.name, true)
+    const body = {
+        lol: '1',
+        audio_name: audioFileBox.name,
+        audio_data: "data:audio/silk;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
+        // img: "data:image/gif;base64,"+fs.readFileSync("/storage/lol/test/nodejs/octocat.png", 'base64')
+    };  // eslint-disable-line
+    const response = await fetch(url + '/api/audio/', {
+        body: JSON.stringify(body),
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' } // eslint-disable-line
+    }); // eslint-disable-line
+    const data = await response.json()
+    await msg.say(JSON.stringify(data)); // eslint-disable-line
+    // // const audioData: Buffer = await audioFileBox.toBuffer();
+    // const audio_dir = filePath + t + '.silk'  // eslint-disable-line
+    // await audioFileBox.toFile(audio_dir, true)
+
+    // const body = {
+    //   lol: '1',
+    //   audio: "data:audio/silk;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
+    //   // img: "data:image/gif;base64,"+fs.readFileSync("/storage/lol/test/nodejs/octocat.png", 'base64')
+    // };  // eslint-disable-line
+    // const response = await fetch(url + '/api/audio/', {
+    //   body: JSON.stringify(body),
+    //   method: 'post',
+    //   headers: { 'Content-Type': 'application/json' } // eslint-disable-line
+    // }); // eslint-disable-line
+    // const data = await response.json()
+    // await msg.say(JSON.stringify(data)); // eslint-disable-line
+    // // await msg.say(data.toString())
+    // // FileBox.toFile
+    // // await fileBox.toFile('/storage/lol/wechaty/wechat_telegram_ocr/media/p.mp3', true)
   }
   if (msg.text() === 'ding') {
     await msg.say('dong')
+    _flag=11
   }
+  
 
   // 通过request发起post请求上传文件到服务器
   // 获取图片的base64

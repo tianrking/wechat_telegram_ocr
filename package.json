@@ -41,7 +41,7 @@
     "node-fetch": "^3.2.0",
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
-    "wechaty": "^1.11.28",
+    "wechaty": "^1.13.7",
     "wechaty-plugin-contrib": "^1.11.1",
     "wechaty-puppet-oicq": "^1.10.2",
     "wechaty-puppet-walnut": "^1.11.6",
