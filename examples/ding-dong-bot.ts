@@ -19,7 +19,6 @@ import request from 'request'
 import fs from 'fs'
 import fetch from 'node-fetch'
 
-
 export enum MessageType {
   Unknown = 0,
   Attachment = 1,    // Attach(6),
@@ -40,11 +39,11 @@ export enum MessageType {
   Post = 16,   // Moment, Channel, Tweet, etc
 }
 
-function onLogout(user: Contact) {
+function onLogout(user: Contact) { // eslint-disable-line
   log.info('StarterBot', '%s logout', user)
 }
 
-function onScan(qrcode: string, status: ScanStatus) {
+function onScan(qrcode: string, status: ScanStatus) { // eslint-disable-line
   if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
     const qrcodeImageUrl = [
       'https://wechaty.js.org/qrcode/',
@@ -57,15 +56,15 @@ function onScan(qrcode: string, status: ScanStatus) {
     log.info('StarterBot', 'onScan: %s(%s)', ScanStatus[status], status)
   }
 }
-function onLogin(user: Contact) {
+function onLogin(user: Contact) { // eslint-disable-line
   log.info('StarterBot', '%s login', user)
 }
 
 let _flag = 0
-async function onMessage(msg: Message) {
+async function onMessage(msg: Message) { // eslint-disable-line
   const url = 'http://0.0.0.0:61112'
   log.info('StarterBot', msg.toString())
-  if (msg.type() == MessageType.Text) {
+  if (msg.type() == MessageType.Text) { // eslint-disable-line
     const str = msg.text()
     const buff = Buffer.from(str, 'utf-8') // create a buffer
     const base64 = buff.toString('base64')  // encode buffer as Base64
@@ -78,13 +77,12 @@ async function onMessage(msg: Message) {
       method: 'post',
       headers: { 'Content-Type': 'application/json' } // eslint-disable-line
     }); // eslint-disable-line
-    const base64_data = await response.json()
-    const fileDataDecoded = Buffer.from(JSON.stringify(base64_data), 'base64');
-    fs.writeFile("aa.wav", fileDataDecoded, function (err) {
-      console.log(err)
+    const base64_data = await response.json() // eslint-disable-line
+    const fileDataDecoded = Buffer.from(JSON.stringify(base64_data), 'base64'); // eslint-disable-line
+    fs.writeFile("aa.wav", fileDataDecoded, function (err) { // eslint-disable-line
+      console.log(err) // eslint-disable-line
     });
-    const wav_fileBox = FileBox.fromFile('aa.wav')
-    //await msg.say("saved !!") // eslint-disable-line
+    const wav_fileBox = FileBox.fromFile('aa.wav') // eslint-disable-line
     await msg.say(wav_fileBox)
     _flag = 0
   }
@@ -149,7 +147,6 @@ async function onMessage(msg: Message) {
     await msg.say('dong')
     _flag = 11
   }
-
 
   // 通过request发起post请求上传文件到服务器
   // 获取图片的base64
