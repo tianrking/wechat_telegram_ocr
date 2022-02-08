@@ -81,7 +81,7 @@ async function onMessage(msg: Message) { // eslint-disable-line
     const fileDataDecoded = Buffer.from(JSON.stringify(base64_data), 'base64'); // eslint-disable-line
     fs.writeFile("aa.wav", fileDataDecoded, function (err) { // eslint-disable-line
       console.log(err) // eslint-disable-line
-    })  
+    })
     const wav_fileBox = FileBox.fromFile('aa.wav') // eslint-disable-line
     await msg.say(wav_fileBox)
     _flag = 0
