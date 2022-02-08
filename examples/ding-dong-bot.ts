@@ -81,7 +81,7 @@ async function onMessage(msg: Message) { // eslint-disable-line
     const fileDataDecoded = Buffer.from(JSON.stringify(base64_data), 'base64'); // eslint-disable-line
     fs.writeFile("aa.wav", fileDataDecoded, function (err) { // eslint-disable-line
       console.log(err) // eslint-disable-line
-    });
+    })  
     const wav_fileBox = FileBox.fromFile('aa.wav') // eslint-disable-line
     await msg.say(wav_fileBox)
     _flag = 0
@@ -89,18 +89,18 @@ async function onMessage(msg: Message) { // eslint-disable-line
 
   if (msg.type() === MessageType.Image) {
     const imageBox = await msg.toFileBox()
-    const audio_dir = imageBox.name
+    const audio_dir = imageBox.name // eslint-disable-line
     await imageBox.toFile(imageBox.name, true)
     const body = {
       lol: _flag,
       pic_name: imageBox.name,
       pic_data: "data:image/jpg;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
-    };  // eslint-disable-line
+    }  // eslint-disable-line
     const response = await fetch(url + '/api/style/', {
       body: JSON.stringify(body),
       method: 'post',
       headers: { 'Content-Type': 'application/json' } // eslint-disable-line
-    }); // eslint-disable-line
+    }) // eslint-disable-line
     const data = await response.json()
     await msg.say(JSON.stringify(data)); // eslint-disable-line
     _flag = 0
@@ -108,11 +108,11 @@ async function onMessage(msg: Message) { // eslint-disable-line
 
   if (msg.type() === MessageType.Audio) {
     const audioFileBox = await msg.toFileBox()
-    const audio_dir = audioFileBox.name
+    const audio_dir = audioFileBox.name // eslint-disable-line
     await audioFileBox.toFile(audioFileBox.name, true)
     const body = {
-      lol: '1',
       audio_name: audioFileBox.name,
+      lol: '1',
       audio_data: "data:audio/silk;base64," + fs.readFileSync(audio_dir, 'base64')  // eslint-disable-line
       // img: "data:image/gif;base64,"+fs.readFileSync("/storage/lol/test/nodejs/octocat.png", 'base64')
     };  // eslint-disable-line
