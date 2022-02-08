@@ -60,17 +60,12 @@ function onScan (qrcode: string, status: ScanStatus) {
 function onLogin (user: Contact) {
   log.info('StarterBot', '%s login', user)
 }
-const filePath:string = '/storage/lol/wechaty/wechat_telegram_ocr/media/'
-const t = 1
+
 let _flag = 0
 async function onMessage (msg: Message) {
   const url = 'http://0.0.0.0:61112'
   log.info('StarterBot', msg.toString())
   if (msg.type() == MessageType.Text) {
-    
-    const text_data = Buffer.from(msg.text(),'base64');
-
-
     const str = msg.text()
     const buff = Buffer.from(str, 'utf-8') // create a buffer
     const base64 = buff.toString('base64')  // encode buffer as Base64
